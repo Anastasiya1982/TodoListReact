@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 
 
 class TodoFooter extends React.Component {
@@ -18,6 +18,8 @@ class TodoFooter extends React.Component {
         );
     }
 }
-
+TodoFooter.propTypes={
+    filterValue:PropTypes.string,
+}
 export default TodoFooter ;
 

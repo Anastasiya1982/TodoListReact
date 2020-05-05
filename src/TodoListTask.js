@@ -3,9 +3,24 @@ import PropTypes from 'prop-types';
 
 
 class TodoListTask extends React.Component {
-    onIsDoneChanged =(e)=>{
-        this.props.changeStatus (this.props.task,e.currentTarget.checked)
+    state={
+        isEditMode:false
     }
+  activatedEditMode =()=>{
+        this.setState({isEditMode:true});
+    }
+
+      deactivatedEditMode=()=>{
+            this.setState({isEditMode:false})
+    }
+
+    onIsDoneChanged =(e)=>{
+        this.props.changeStatus (this.props.task.id ,e.currentTarget.checked)
+    };
+    onTitleChanged =(e)=>{
+        this.props.changeTitle (this.props.task.id ,e.currentTarget.value)
+    };
+
     render = () => {
         let taskIsDoneClass=this.props.task.isDone?"todoList-task done":"todoList-task"
         return (
@@ -15,7 +30,13 @@ class TodoListTask extends React.Component {
                        checked={this.props.task.isDone}
                        onChange={ this.onIsDoneChanged}
                    />
-                   <span>{this.props.task.title}  </span>
+                   {this.state.isEditMode
+                   ? <input
+                       value={this.props.task.title}
+                       autoFocus={true}
+                       onBlur={this.deactivatedEditMode}
+                       onChange={this.onTitleChanged}/>
+                   : <span onClick={this.activatedEditMode}>{this.props.task.id}:{this.props.task.title}  </span> }
                    <span>{this.props.task.priority}</span>
                </div>
         );

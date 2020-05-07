@@ -26,7 +26,7 @@ class TodoListHeader  extends React.Component {
 
     onTitleChanged=(e)=>{
         this.setState({
-            error:true,
+            error:false,
             title: e.currentTarget.value
             });
     }

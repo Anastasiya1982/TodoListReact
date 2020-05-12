@@ -40,6 +40,9 @@ class TodoFooter extends React.Component {
         );
     }
 }
+
+
+
 TodoFooter.propTypes={
     filterValue:PropTypes.string,
 }

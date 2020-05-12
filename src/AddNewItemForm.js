@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import  TodoListTitle from "./TodoListTitle";
 
-class TodoListHeader  extends React.Component {
+class AddNewItemForm extends React.Component {
     newTaskTitleRef=React.createRef();
     state={
         error:false,
         title: ""
     }
 
-    onAddTaskClick = ()=>{
+    onAddItemClick = ()=>{
         //let newTitle = this.newTaskTitleRef.current.value;
         let newTitle=this.state.title.trim();
          if(newTitle.trim() === "") {
@@ -16,7 +17,7 @@ class TodoListHeader  extends React.Component {
          }
         else {
            // this.newTaskTitleRef.current.value = "";
-            this.props.addTask(newTitle);
+            this.props.addItem(newTitle);
             this.setState({
                 error:false,
                 title:""
@@ -33,7 +34,7 @@ class TodoListHeader  extends React.Component {
 
     onKeyPress=(e)=>{
         if(e.key==="Enter"){
-            this.onAddTaskClick();
+            this.onAddItemClick();
         }
     }
 
@@ -41,24 +42,21 @@ class TodoListHeader  extends React.Component {
     render = () => {
         let errorClass=this.state.error ? "error":"";
         return (
-                    <div className="todoList-header">
-                        <h3 className="todoList-header__title">What to Learn</h3>
-                        <div className="todoList-newTaskForm">
+                    <div  className="todolist-NewTaskForm ">
+
                             <input className={errorClass}
                                 type="text"
-                                placeholder="New task name"
+                                placeholder="New item name"
                                //ref={this.newTaskTitleRef}
                                 onChange ={this.onTitleChanged}
                                 onKeyPress={this.onKeyPress}
                                 value={this.state.title}
                             />
-                            <button onClick={this.onAddTaskClick} >Add</button>
-                        </div>
-                    </div>
-
+                            <button onClick={this.onAddItemClick} >Add</button>
+                     </div>
 
         );
     }
 }
 
-export default TodoListHeader;
+export default AddNewItemForm;

@@ -14,7 +14,7 @@ class TodoList extends React.Component {
             tasks: [],
             filterValue: "All"
         };
-            nextTaskId=5;
+           nextTaskId=5;
 
             saveState=()=>{
                 let stateAsAString=JSON.stringify(this.state);
@@ -50,7 +50,7 @@ class TodoList extends React.Component {
                     priority: "low",
                     id:this.nextTaskId
                 };
-            // this.nextTaskId++;
+             this.nextTaskId++;
             // let newTasks = [...this.state.tasks, newTask];
             // this.setState({tasks: newTasks},this.saveState);
            this.props.addTask(this.props.id,newTask);
@@ -93,50 +93,49 @@ class TodoList extends React.Component {
     //          });
     //          this.setState({tasks: newTasks});
      }
-    deleteTask = (id) => {
-        let newTasks=this.state.tasks.filter(t=>{
-            return t.id !==id } );
-        this.setState({newTasks})
+    deleteTask = (taskId) => {
+        this.props.deleteTask(this.props.id,taskId);
     }
      deleteTodoList=()=>{
          this.props.deleteTodoList(this.props.id);
      }
 
-        render = () => {
-            return (
-                <div className="App">
-                    <div className="todoList">
-                        <div className="todoList-header">
-                            <div className="todoList-header-title">
-                                <TodoListTitle title={this.props.title} />
-                                <button onClick={this.deleteTodoList} >X</button>
-                            </div>
-                            <AddNewItemForm addItem={this.addTask}/>
+    render = () => {
+        return (
+            <div className="App">
+                <div className="todoList">
+                    <div className="todoList-header">
+                        <div className="todoList-header-title">
+                            <TodoListTitle title={this.props.title}/>
+                            <button onClick={this.deleteTodoList}>X</button>
                         </div>
-                        <TodoListTasks tasks={this.props.tasks.filter(t=>{
-                            switch (this.state.filterValue) {
-                                case "Active":
-                                    return t.isDone === false;
-                                case "Completed":
-                                    return t.isDone === true;
-                                case "All":
-                                    return true;
-                                default:
-                                    return true;}
-                            })}
-                            changeStatus ={this.changeStatus}
-                            changeTitle={this.changeTitle}
-                            deleteTask={this.deleteTask}
-
-                        />
-                        <TodoFooter filterValue={this.state.filterValue}
-                        changeFilter={this.changeFilter}
-                        />
+                        <AddNewItemForm addItem={this.addTask}/>
                     </div>
+                    <TodoListTasks tasks={this.props.tasks.filter(t => {
+                        switch (this.state.filterValue) {
+                            case "Active":
+                                return t.isDone === false;
+                            case "Completed":
+                                return t.isDone === true;
+                            case "All":
+                                return true;
+                            default:
+                                return true;
+                        }
+                    })}
+                                   changeStatus={this.changeStatus}
+                                   changeTitle={this.changeTitle}
+                                   deleteTask={this.deleteTask}
+
+                    />
+                    <TodoFooter filterValue={this.state.filterValue}
+                                changeFilter={this.changeFilter}
+                    />
                 </div>
-            );
-        }
+            </div>
+        );
     }
+}
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -157,10 +156,18 @@ const mapDispatchToProps = (dispatch) => {
             };
             dispatch(action)
         },
-        deleteTodoList:(todolistId)=>{
-            const action={
-                type:"DELETE_TODOLIST",
-                todolistId:todolistId
+        deleteTodoList: (todolistId) => {
+            const action = {
+                type: "DELETE_TODOLIST",
+                todolistId: todolistId
+            };
+            dispatch(action)
+        },
+        deleteTask: (todolistId, taskId) => {
+            const action = {
+                type: "DELETE_TASK",
+                todolistId: todolistId,
+                taskId: taskId
             };
             dispatch(action)
         }

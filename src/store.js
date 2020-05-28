@@ -41,28 +41,42 @@ const reducer=(state=initialState,action)=> {
                 })
             }
         case "CHANGE_TASK":
-           const todolistsNew = state.todolists.map(todo => {
+            const todolistsNew = state.todolists.map(todo => {
                 if (todo.id !== action.todolistId) {
                     return todo
                 } else {
-                    return {...todo, tasks: [...todo.tasks.map(task=>{
-                            if(task.id !==action.taskId){
+                    return {
+                        ...todo, tasks: [...todo.tasks.map(task => {
+                            if (task.id !== action.taskId) {
                                 return task
-                            }else{
-                                return {...task,...action.obj}
+                            } else {
+                                return {...task, ...action.obj}
                             }
                         })]
                     }
                 }
             })
-            return {...state, todolists:  todolistsNew}
+            return {...state, todolists: todolistsNew}
         case "DELETE_TODOLIST":
             return {
                 ...state,
                 todolists: state.todolists.filter(
-                    todolist=>todolist.id !==action.todolistId)
+                    todolist => todolist.id !== action.todolistId)
+            }
+        case "DELETE_TASK":
+            debugger
+            return {
+                ...state,
+                todolists: state.todolists.map(todo => {
+                    if (todo.id !== action.todolistId) {
+                        return todo
+                    } else {
+                        return {...todo, tasks: todo.tasks.filter(task => task.id !== action.taskId)}
+                    }
+                })
             }
     }
+
     return state;
 }
 

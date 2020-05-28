@@ -67,7 +67,7 @@ class TodoList extends React.Component {
                    }
                    return t;
                });
-
+                this.props.changeTask(this.props.id,obj);
                // this.setState({tasks: newTasks},this.saveState)
            }
 
@@ -98,14 +98,19 @@ class TodoList extends React.Component {
             return t.id !==id } );
         this.setState({newTasks})
     }
-
+     deleteTodoList=()=>{
+         this.props.deleteTodoList(this.props.id);
+     }
 
         render = () => {
             return (
                 <div className="App">
                     <div className="todoList">
                         <div className="todoList-header">
-                            <TodoListTitle title={this.props.title} />
+                            <div className="todoList-header-title">
+                                <TodoListTitle title={this.props.title} />
+                                <button onClick={this.deleteTodoList} >X</button>
+                            </div>
                             <AddNewItemForm addItem={this.addTask}/>
                         </div>
                         <TodoListTasks tasks={this.props.tasks.filter(t=>{
@@ -151,8 +156,14 @@ const mapDispatchToProps = (dispatch) => {
                 obj: obj
             };
             dispatch(action)
+        },
+        deleteTodoList:(todolistId)=>{
+            const action={
+                type:"DELETE_TODOLIST",
+                todolistId:todolistId
+            };
+            dispatch(action)
         }
-
     }
 }
   const ConnectedTotoList=connect(null,mapDispatchToProps)(TodoList);

@@ -14,10 +14,21 @@
 .todoList > div {
   padding: 10px;
 }
+.todoList-header-title {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 95px;
+    align-items:center;
+}
+.todoList-header-title button{
+    width: 30px;
+    height: 25px;
+}
 
 .todoList-task {
 
-}.filter-active {
+}
+.filter-active {
   background-color: darkcyan;
  }
 .error {

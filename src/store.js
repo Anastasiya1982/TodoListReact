@@ -56,10 +56,13 @@ const reducer=(state=initialState,action)=> {
                 }
             })
             return {...state, todolists:  todolistsNew}
-
-
+        case "DELETE_TODOLIST":
+            return {
+                ...state,
+                todolists: state.todolists.filter(
+                    todolist=>todolist.id !==action.todolistId)
+            }
     }
-
     return state;
 }
 

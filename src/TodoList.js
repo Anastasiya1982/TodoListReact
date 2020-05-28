@@ -13,19 +13,18 @@ class TodoList extends React.Component {
             tasks: [],
             filterValue: "All"
         };
-
             nextTaskId=5;
 
             saveState=()=>{
                 let stateAsAString=JSON.stringify(this.state);
-                localStorage.setItem("our-state-"+this.props.id,stateAsAString);
+                localStorage.setItem("tasks",stateAsAString);
             };
             restoreState=()=>{
                 let state={
                     tasks:[],
                     filterValue: "All"
                 };
-                let stateAsString=localStorage.getItem("our-state-"+this.props.id);
+                let stateAsString=localStorage.getItem("tasks");
                 if(stateAsString){
                     state=JSON.parse(stateAsString);
                }
@@ -69,8 +68,6 @@ class TodoList extends React.Component {
                this.setState({tasks: newTasks},this.saveState)
            }
 
-
-
           changeStatus =(taskId,isDone)=> {
                this.changeTask(taskId,{isDone:isDone})
             // let newTasks = this.state.tasks.map(t => {
@@ -93,6 +90,12 @@ class TodoList extends React.Component {
     //          });
     //          this.setState({tasks: newTasks});
      }
+    deleteTask = (id) => {
+        let newTasks=this.state.tasks.filter(t=>{
+            return t.id !==id } );
+        this.setState({newTasks})
+    }
+
 
         render = () => {
             return (
@@ -115,6 +118,7 @@ class TodoList extends React.Component {
                             })}
                             changeStatus ={this.changeStatus}
                             changeTitle={this.changeTitle}
+                            deleteTask={this.deleteTask}
 
                         />
                         <TodoFooter filterValue={this.state.filterValue}

@@ -10,7 +10,7 @@ class AddNewItemForm extends React.Component {
     }
 
     onAddItemClick = ()=>{
-        //let newTitle = this.newTaskTitleRef.current.value;
+
         let newTitle=this.state.title.trim();
          if(newTitle.trim() === "") {
              this.setState({error: true})

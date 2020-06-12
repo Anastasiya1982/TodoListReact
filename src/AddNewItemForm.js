@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import  TodoListTitle from "./TodoListTitle";
 
 class AddNewItemForm extends React.Component {
-    newTaskTitleRef=React.createRef();
+
     state={
         error:false,
         title: ""

@@ -24,6 +24,9 @@ class App extends React.Component {
         this.restoreState();
     }
 
+  //делаем запрос на сервер за тудулистами
+    //ждем ответа, после того как ответ получен
+    // нужно отправить их в State  для отрисовки
 
     restoreState = () => {
         axios.get("https://social-network.samuraijs.com/api/1.1/todo-lists", {withCredentials: true})
@@ -49,7 +52,7 @@ class App extends React.Component {
 
 
     render = () => {
-        const todolists = this.props.todolists.map(tl => <TodoList id={tl.id} title={tl.title} tasks={tl.tasks}/>);
+        const todolists = this.props.todolists.map(tl => <TodoList key={tl.id} id={tl.id} title={tl.title} tasks={tl.tasks}/>);
         return (
             <>
                 <div>

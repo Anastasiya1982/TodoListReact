@@ -1,12 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import EditableSpan from "./EditableSpan";
 
 class TodoListTitle  extends React.Component {
 
+
+    changeTitle=(title)=>{
+       this.props.onChange(title)
+
+    }
     render = () => {
-        return (  <div className="todoList-header">
-                        <h3 className="todoList-header__title">{this.props.title}</h3>
-                 </div>
+        return (
+            <>
+            <EditableSpan value={this.props.title} onChange={this.changeTitle}/>
+           </>
        );
     }
 }

@@ -1,28 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import EditableSpan from "./EditableSpan";
 
 
 class TodoListTask extends React.Component {
     state = {
-        isEditMode: false
+        isEditMode: false,
+        title:this.props.title
     }
-    activatedEditMode = () => {
-        this.setState({isEditMode: true});
-    }
-
-    deactivatedEditMode = (e) => {
-        debugger;
-        this.props.changeTitle(this.props.task, e.currentTarget.value);
-        this.setState({isEditMode: false});
+    // activatedEditMode = () => {
+    //     this.setState({isEditMode: true});
+    // }
+    //
+   updateTaskTitle = (value) => {
+        this.props.changeTitle(this.props.task, value);
 
     }
 
     onIsDoneChanged = (e) => {
         this.props.changeStatus(this.props.task, e.currentTarget.checked);
     };
-    // onTitleChanged = (e) => {
-    //     // this.props.changeTitle(this.props.task, e.currentTarget.value);
-    // };
+
 
     deleteTask = () => {
         this.props.deleteTask(this.props.task.id)
@@ -32,20 +30,11 @@ class TodoListTask extends React.Component {
         let taskIsDoneClass = isStatus ? "todoList-task done" : "todoList-task"
         return (
             <div className={taskIsDoneClass}>
-                <input
-                    type="checkbox"
+                <input type="checkbox"
                     checked={isStatus}
-                    onChange={this.onIsDoneChanged}
-                />
-                {this.state.isEditMode
-                    ? <input
-                        defaultValue={this.props.task.title}
-                        autoFocus={true}
-                        onBlur={this.deactivatedEditMode}
-                        // onChange={this.onTitleChanged}
-                    />
-                    : <span onClick={this.activatedEditMode}>{this.props.task.id}:{this.props.task.title}  </span>}
-                <span> priority: {this.props.task.priority}</span>
+                    onChange={this.onIsDoneChanged} />
+                <EditableSpan value={this.props.task.title}
+                              onChange={this.updateTaskTitle}/> ,  priority: {this.props.task.priority}
                 <button onClick={this.deleteTask}>{'\u274C'}</button>
             </div>
         );

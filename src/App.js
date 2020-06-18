@@ -3,8 +3,9 @@ import './App.css';
 import TodoList from "./TodoList";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
-import axios from'axios';
 import {createTodolistAC, setTodolistsAC} from "./reducer";
+import {api} from "./api";
+import EditableSpan from "./EditableSpan";
 
 
 class App extends React.Component {
@@ -28,27 +29,22 @@ class App extends React.Component {
     //ждем ответа, после того как ответ получен
     // нужно отправить их в State  для отрисовки
 
-    restoreState = () => {
-        axios.get("https://social-network.samuraijs.com/api/1.1/todo-lists", {withCredentials: true})
+restoreState=()=>{
+      api.setTodolists()
             .then(res => {
                 this.props.setTodolists(res.data)
             });
     }
 
     addTodoList = (newTitle) => {
-        axios.post("https://social-network.samuraijs.com/api/1.1/todo-lists",
-            {title: newTitle},
-            {
-                withCredentials: true,
-                headers: {"API-KEY": "0e5317f8-1eba-40e8-9b59-8d5e29cf9296"}
-            })
+        api.createTodolist(newTitle)
             .then(res => {
-                    if (res.data.resultCode === 0) {
-                        this.props.addTodolist(res.data.data.item)
+                this.props.addTodolist(res.data.data.item)
                     }
-                }
             )
-    }
+     }
+
+
 
 
     render = () => {
@@ -56,6 +52,7 @@ class App extends React.Component {
         return (
             <>
                 <div>
+                    <EditableSpan value={""} changeValue={(value)=>{}}/>
                     <AddNewItemForm addItem={this.addTodoList}/>
                 </div>
 

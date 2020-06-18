@@ -5,6 +5,8 @@ export const SET_TASKS= "SET-TASKS";
 export const DELETE_TASK ="DELETE_TASK";
 export  const UPDATE_TASK ="UPDATE-TASK";
 export  const DELETE_TODOLIST= "DELETE_TODOLIST";
+export const UPDATE_TODOLIST_TITLE="TodoList/Reducer/UPDATE_TODOLIST_TITLE";
+
 
 
 
@@ -14,6 +16,20 @@ const initialState={
 
 const reducer=(state=initialState,action)=> {
     switch (action.type) {
+        case UPDATE_TODOLIST_TITLE:
+            return {
+               ...state,
+                todolists: state.todolists.map(tl=>{
+                    if(tl.id!= action.todolistId){
+                        return tl
+                    }else{
+                        return {
+                            ...tl,
+                            title:action.title
+                        }
+                    }
+                })
+        }
         case SET_TODOLISTS:
             return {
                 ...state,
@@ -104,9 +120,11 @@ const reducer=(state=initialState,action)=> {
     return state;
 }
 
+
 export const setTodolistsAC=(todolists)=>{
     return{
-        type:SET_TODOLISTS,todolists:todolists
+        type:SET_TODOLISTS,
+        todolists:todolists
     }
 }
 export const setTasksAC=(todolistId,tasks)=>{
@@ -123,9 +141,11 @@ export const createTodolistAC =(newTodolist)=>{
         newTodolist:newTodolist
     }
 }
-export const addTaskAC=(newTask,todolistId,)=>{
+export const addTaskAC=(newTask,todolistId)=>{
     return{
-        type:ADD_TASK, newTask,todolistId
+        type:ADD_TASK,
+        newTask,
+        todolistId
     }
 }
 export const deleteTaskAC=(taskId, todolistId)=>{
@@ -139,6 +159,13 @@ export const updateTaskAC=(task)=>{
     return{
         type:UPDATE_TASK,
         task
+    }
+}
+export const changeTodolistTitleAC=(title,todolistId)=>{
+    return{
+        type:UPDATE_TODOLIST_TITLE,
+        title,
+        todolistId
     }
 }
 

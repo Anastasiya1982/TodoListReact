@@ -15,6 +15,8 @@ import {
     updateTodolistTitleAC
 } from "./reducer";
 import {api} from "./api";
+import IconButton from "@material-ui/core/IconButton";
+import {Delete} from "@material-ui/icons";
 
 
 
@@ -122,7 +124,10 @@ class TodoList extends React.Component {
                         <div className="todoList-header-title">
                             <TodoListTitle title={this.props.title}
                                            onChange={this.changeTodolistTitle}/>
-                            <button onClick={this.deleteTodoList}>X</button>
+                                           <IconButton onClick={this.deleteTodoList}>
+                                               <Delete/>
+                                           </IconButton>
+                            {/*<button onClick={this.deleteTodoList}>X</button>*/}
                         </div>
                         <AddNewItemForm addItem={this.addTask}/>
                     </div>

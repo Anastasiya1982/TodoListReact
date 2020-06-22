@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import EditableSpan from "./EditableSpan";
+import IconButton from "@material-ui/core/IconButton";
+import {Delete} from "@material-ui/icons";
 
 
 class TodoListTask extends React.Component {
@@ -35,7 +37,10 @@ class TodoListTask extends React.Component {
                     onChange={this.onIsDoneChanged} />
                 <EditableSpan value={this.props.task.title}
                               onChange={this.updateTaskTitle}/> ,  priority: {this.props.task.priority}
-                <button onClick={this.deleteTask}>{'\u274C'}</button>
+                <IconButton onClick={this.deleteTask}>
+                    <Delete/>
+                </IconButton>
+                {/*<button onClick={this.deleteTask}>{'\u274C'}</button>*/}
             </div>
         );
     }

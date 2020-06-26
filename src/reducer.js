@@ -1,3 +1,6 @@
+import {api} from "./api";
+
+
 export  const SET_TODOLISTS="SET_TODOLISTS";
 export const ADD_TODOLIST="TodoList/Reducer/ADD-TODOLIST";
 export const ADD_TASK="TodoList/Reducer/ADD-TASK";
@@ -77,8 +80,7 @@ const reducer=(state=initialState,action)=> {
             return {
                 ...state,
                 todolists: state.todolists.map(todolist=>{
-
-                    if(todolist.id===action.task.todoListId){
+                    if(todolist.id===action.todolistId){
                         return{
                             ...todolist,
                             tasks:todolist.tasks.map(t=>{
@@ -121,13 +123,19 @@ const reducer=(state=initialState,action)=> {
 }
 
 
-export const setTodolistsAC=(todolists)=>{
+ const setTodolistsAC=(todolists)=>{
     return{
         type:SET_TODOLISTS,
         todolists:todolists
     }
 }
-export const setTasksAC=(todolistId,tasks)=>{
+const deleteTodolistAC=(todolistId)=>{
+    return {
+        type: DELETE_TODOLIST,
+        todolistId: todolistId
+    }
+}
+ const setTasksAC=(todolistId,tasks)=>{
     return{
         type:SET_TASKS,
         todolistId:todolistId,
@@ -135,33 +143,35 @@ export const setTasksAC=(todolistId,tasks)=>{
 
     }
 }
-export const createTodolistAC =(newTodolist)=>{
+ const createTodolistAC =(newTodolist)=>{
     return{
         type:ADD_TODOLIST,
         newTodolist:newTodolist
     }
 }
-export const addTaskAC=(newTask,todolistId)=>{
+ const addTaskAC=(newTask,todolistId)=>{
     return{
         type:ADD_TASK,
         newTask,
         todolistId
     }
 }
-export const deleteTaskAC=(taskId, todolistId)=>{
+ const deleteTaskAC=(taskId, todolistId)=>{
     return{
+
         type:DELETE_TASK,
         taskId,
         todolistId
     }
 }
-export const updateTaskAC=(task)=>{
+export const updateTaskAC=(task,todolistId)=>{
     return{
         type:UPDATE_TASK,
+        todolistId,
         task
     }
 }
-export const changeTodolistTitleAC=(title,todolistId)=>{
+ const changeTodolistTitleAC=(title,todolistId)=>{
     return{
         type:UPDATE_TODOLIST_TITLE,
         title,
@@ -169,7 +179,85 @@ export const changeTodolistTitleAC=(title,todolistId)=>{
     }
 }
 
+export  const loadTodolistThunkCreator=()=> {
+    return (dispatch) => {
+        api.setTodolists()
+            .then(res => {
+                dispatch(setTodolistsAC(res.data));
+            });
+    }
+}
+export const addTodoThunkCreator=(newTitle)=>{
+    return(dispatch,getState)=>{
+        api.createTodolist(newTitle)
+            .then(res => {
+                let todolist=res.data.data.item;
+                dispatch(createTodolistAC(todolist));
+                    }
+            )
+    }
+}
+export const deleteTodolistTC=(todolistId)=>{
+    return(dispatch)=>{
+        api.deleteTodolist(todolistId)
+            .then(res => {
+                    if (res.data.resultCode === 0) {
+                       dispatch(deleteTodolistAC(todolistId));
+                    }
+                }
+            )
+    }
+}
+export const changeTodolistTitleTC=(title,todolistId)=>{
+    return(dispatch)=>{
+        api.updateTodolistTitle(title,todolistId)
+            .then(res=> {
+                if (res.data.resultCode === 0) {
+                    //change value in Redux
+                    dispatch(changeTodolistTitleAC(title, todolistId));
+                }
+            });
 
+    }
+}
+export const setTasksTC=(todolistId)=>{
+    return (dispatch)=>{
+        api.loadTasks(todolistId)
+            .then(res => {
+                let tasks=res.data.items
+                   dispatch(setTasksAC(todolistId, tasks));
+                });
+    }
+}
+export const addTaskTC=(newTitle, todolistId)=>{
+    return(dispatch)=>{
+        api.addTask(newTitle, todolistId)
+            .then(res => {
+                let task=res.data.data.item;
+                dispatch(addTaskAC(task,todolistId));
+            })
+    }
+}
+export  const deleteTaskTC =(taskId,todolistId)=>{
+    return(dispatch,getState)=>{
+        api.deleteTask( taskId,todolistId)
+            .then(res => {
+                dispatch(deleteTaskAC(taskId, todolistId));
+                }
+            )
+    }
+}
+export const updateTaskTC=( task,todolistId)=>{
+    return (dispatch)=>{
+        api.updateTask( task,todolistId)
+            .then(res => {
+                    if (res.data.resultCode === 0) {
+                        dispatch(updateTaskAC(task,todolistId));
+                    }
+                }
+            )
+    }
+}
 
 
 export default reducer;

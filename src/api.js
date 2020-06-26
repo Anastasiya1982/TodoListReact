@@ -25,18 +25,17 @@ export const api  = {
       return   instance.post(`/todo-lists/${todolistId}/tasks`,
           {title:newTitle})
     },
-    updateTask(todolistId,task){
-        debugger
-         return instance.put(`/todo-lists/${todolistId}/tasks/${task.id}`, task)
+    updateTask(task,todolistId){
+         return instance.put(`/todo-lists/${todolistId}/tasks/${task.id}`, task);
     },
     deleteTodolist(todolistId){
         return  instance.delete("/todo-lists/"+ todolistId)
     },
-    deleteTask(todolistId,taskId){
-        return instance.delete(`/todo-lists/${todolistId}/tasks/${taskId}`)
+    deleteTask(taskId,todolistId){
+        return instance.delete(`/todo-lists/${todolistId}/tasks/${taskId}`);
     },
     updateTodolistTitle(title,todolistId){
-        return instance.put(`/todo-lists/${todolistId}`,title)
+        return instance.put(`/todo-lists/${todolistId}`,title);
     }
 
 

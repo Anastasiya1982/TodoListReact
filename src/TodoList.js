@@ -6,15 +6,10 @@ import TodoListTitle from "./TodoListTitle";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
 import {
-    addTaskAC,
-    changeTodolistAC, changeTodolistTitleAC,
-    DELETE_TODOLIST,
-    deleteTaskAC,
-    setTasksAC,
-    updateTaskAC,
-    updateTodolistTitleAC
+    addTaskTC, changeTodolistTitleTC,
+    deleteTaskTC, deleteTodolistTC,
+    setTasksTC,  updateTaskTC
 } from "./reducer";
-import {api} from "./api";
 import IconButton from "@material-ui/core/IconButton";
 import {Delete} from "@material-ui/icons";
 
@@ -31,19 +26,13 @@ class TodoList extends React.Component {
     }
 
     restoreState = () => {
-        api.loadTasks(this.props.id)
-            .then(res => {
-                    this.props.setTasks(this.props.id, res.data.items)
-                }
-            )
+        this.props.loadTasks(this.props.id)
+
     }
 
 
     addTask = (newTitle) => {
-        api.addTask(newTitle, this.props.id)
-            .then(res => {
-                this.props.addTask(res.data.data.item, this.props.id);
-            })
+       this.props.addTask(newTitle,this.props.id);
     }
 
 
@@ -53,66 +42,27 @@ class TodoList extends React.Component {
     }
 
     changeTask = (newTask) => {
-        api.updateTask(this.props.id, newTask)
-            .then(res => {
-                    if (res.data.resultCode === 0) {
-                        this.props.updateTask(newTask,this.props.id,)
-                    }
-                }
-            )
+        this.props.updateTask(newTask,this.props.id)
     }
 
     changeStatus = (newTask, status) => {
         this.changeTask({...newTask, status: status === true ? 2 : 0});
-        // let newTasks = this.state.tasks.map(t => {
-        //     if (t.id === taskId){
-        //         return {...t, isDone: isDone}
-        // }
-        //
-        //     return t;
-        // });
-        // this.setState({tasks: newTasks})
     }
 
     changeTitle = (newTask, title) => {
         this.changeTask({...newTask, title: title});
-        //          let newTasks = this.state.tasks.map(t => {
-        //              if (t.id === taskId) {
-        //                  return {...t, title: title}
-        //              }
-        //              return t;
-        //          });
-        //          this.setState({tasks: newTasks});
     }
     deleteTask = (taskId) => {
-        api.deleteTask(this.props.id, taskId)
-            .then(res => {
-                    if (res.data.resultCode === 0) {
-                        this.props.deleteTask(taskId, this.props.id)
-                    }
-                }
-            )
-        this.props.deleteTask(taskId, this.props.id);
+        this.props.deleteTask(taskId, this.props.id)
     }
 
 
     deleteTodoList = () => {
-        api.deleteTodolist(this.props.id)
-            .then(res => {
-                    if (res.data.resultCode === 0) {
-                        this.props.deleteTodoList(this.props.id)
-                    }
-                }
-            )
+        this.props.deleteTodo(this.props.id)
     }
 
     changeTodolistTitle=(title)=>{
-        api.updateTodolistTitle(title,this.props.id)
-            .then(res=>{
-                //change value in Redux
-                this.props.changeTodolistTitle(title);
-            })
-        this.props.changeTodolistTitle(title,this.props.id);
+        this.props.changeTodolistTitle(title,this.props.id)
     }
 
     render = () => {
@@ -160,36 +110,25 @@ class TodoList extends React.Component {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        addTask(newTask, todolistId,) {
-            dispatch(addTaskAC(newTask, todolistId,));
+        addTask:(newTask, todolistId)=> {
+            dispatch(addTaskTC(newTask, todolistId,));
         },
-        changeTask: (todolistId, taskId, obj) => {
-            const action = {
-                type: "CHANGE_TASK",
-                todolistId: todolistId,
-                taskId: taskId,
-                obj: obj
-            };
-            dispatch(action)
-        },
-        deleteTodoList: (todolistId) => {
-            const action = {
-                type: DELETE_TODOLIST,
-                todolistId: todolistId
-            };
-            dispatch(action)
+
+        deleteTodo: (todolistId) => {
+            let thunk=deleteTodolistTC(todolistId)
+            dispatch(thunk);
         },
         deleteTask: (taskId, todolistId) => {
-            dispatch(deleteTaskAC(taskId, todolistId))
+            dispatch(deleteTaskTC(taskId, todolistId));
         },
-        setTasks: (todolistId, tasks) => {
-            dispatch(setTasksAC(todolistId, tasks))
+       loadTasks: (todolistId, tasks) => {
+            dispatch(setTasksTC(todolistId, tasks));
         },
-        updateTask: (task) => {
-            dispatch(updateTaskAC(task))
+        updateTask: (newTask,todolistId,) => {
+            dispatch(updateTaskTC(newTask,todolistId));
         },
         changeTodolistTitle:(title,todolistId)=>{
-            dispatch(changeTodolistTitleAC(title,todolistId))
+            dispatch(changeTodolistTitleTC(title,todolistId))
         }
 
     }

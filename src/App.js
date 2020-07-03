@@ -57,7 +57,7 @@ restoreState=()=>{
 
     const mapStateToProps = (state) => {
         return {
-            todolists: state.todolists
+            todolists: state.reducer.todolists
         }
     }
     const mapDispatchToProps = (dispatch) => {

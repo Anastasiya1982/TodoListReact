@@ -2,8 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-export class EditableSpan extends React.Component {
-    state = {
+
+type OwnPropsType={
+    value:string
+    onChange:(e:string)=>void
+}
+
+type StateType={
+    isEditMode:boolean
+}
+
+export class EditableSpan extends React.Component<OwnPropsType,StateType> {
+    state:StateType = {
         isEditMode: false,
 
     }
@@ -11,7 +21,7 @@ export class EditableSpan extends React.Component {
         this.setState({isEditMode: true});
     }
 
-    deactivatedEditMode = (e) => {
+    deactivatedEditMode = (e:React.ChangeEvent<HTMLInputElement>) => {
         this.props.onChange(e.currentTarget.value);
         this.setState({isEditMode: false});
 

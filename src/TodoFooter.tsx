@@ -1,9 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 
-class TodoFooter extends React.Component {
-    state ={
+
+type StateType={
+    isHidden:boolean
+}
+
+type OwnPropsType={
+    changeFilter:(filterValue:string)=>void
+    filterValue:string
+}
+class TodoFooter extends React.Component <OwnPropsType,StateType>{
+    state:StateType ={
         isHidden:false
     }
     onAllFilterClick = ()=>this.props.changeFilter("All");
@@ -42,9 +50,5 @@ class TodoFooter extends React.Component {
 }
 
 
-
-TodoFooter.propTypes={
-    filterValue:PropTypes.string,
-}
 export default TodoFooter ;
 

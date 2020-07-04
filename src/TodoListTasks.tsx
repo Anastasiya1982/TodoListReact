@@ -1,15 +1,21 @@
 import React from 'react';
 import TodoListTask from "./TodoListTask";
-import PropTypes from 'prop-types';
+import {TaskType} from "./Types/entities";
+
+type OwnPropsType={
+    tasks:Array<TaskType>
+    changeStatus:(newTask:TaskType, status:boolean)=>void
+    changeTitle:(newTask:TaskType, title:string)=>void
+    deleteTask:(taskId:string)=>void
+}
 
 
-
-class TodoListTasks extends React.Component {
+class TodoListTasks extends React.Component<OwnPropsType> {
     render = () => {
 
        let tasksElements = this.props.tasks.map(task =>{
            return (
-               <TodoListTask
+               <TodoListTask  title={task.title}
                              key={task.id}
                              task={task}
                              changeStatus={this.props.changeStatus}
@@ -26,12 +32,7 @@ class TodoListTasks extends React.Component {
         );
     }
 }
-TodoListTasks.propTypes={
-    tasks:PropTypes.array,
-    title: PropTypes.string,
-    isDone:PropTypes.func,
-    priority:PropTypes.string
-}
+
 
 export default TodoListTasks;
 

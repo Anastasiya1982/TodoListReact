@@ -1,4 +1,8 @@
 import {api} from "./api";
+import {TaskType, TodoType} from "./Types/entities";
+import {Dispatch} from "redux";
+import {AppStateType} from "./store";
+import {ThunkAction, ThunkDispatch} from "redux-thunk";
 
 
 export  const SET_TODOLISTS="SET_TODOLISTS";
@@ -10,14 +14,16 @@ export  const UPDATE_TASK ="UPDATE-TASK";
 export  const DELETE_TODOLIST= "DELETE_TODOLIST";
 export const UPDATE_TODOLIST_TITLE="TodoList/Reducer/UPDATE_TODOLIST_TITLE";
 
+type InitialStateType={
+    todolists:Array<TodoType>
+}
 
 
-
-const initialState={
+const initialState:InitialStateType={
     "todolists":[]
 }
 
-const reducer=(state=initialState,action)=> {
+const reducer=(state:InitialStateType=initialState,action:ActionsType):InitialStateType=> {
     switch (action.type) {
         case UPDATE_TODOLIST_TITLE:
             return {
@@ -36,9 +42,9 @@ const reducer=(state=initialState,action)=> {
         case SET_TODOLISTS:
             return {
                 ...state,
-                todolists: action.todolists.map(tl=> {
+                todolists: action.todolists.map(todolist=> {
                     return {
-                        ...tl,
+                        ...todolist,
                         tasks: []
                     }
                 })
@@ -116,26 +122,73 @@ const reducer=(state=initialState,action)=> {
                             tasks: todo.tasks.filter(task => task.id !== action.taskId)}
                     }
                 })
-            }
-    }
+            };
+        default:
+            return state;
+}
+ };
+export default reducer;
 
-    return state;
+
+export type ActionsType=SetTodolistsACType|
+    DeleteTodolistACType|
+    SetTasksACType|CreateTodolistACType|AddTaskACType|
+    DeleteTaskACType|UpdateTaskACType|ChangeTodolistTitleACType
+
+
+type SetTodolistsACType={
+    type: typeof SET_TODOLISTS
+    todolists:Array<TodoType>
 }
 
+type DeleteTodolistACType={
+    type:typeof DELETE_TODOLIST
+    todolistId:string
+}
+type SetTasksACType={
+    type:typeof SET_TASKS
+    todolistId:string
+    tasks:Array<TaskType>
+}
+type CreateTodolistACType ={
+    type: typeof ADD_TODOLIST
+    newTodolist:TodoType
+}
 
- const setTodolistsAC=(todolists)=>{
+type AddTaskACType={
+    type:typeof  ADD_TASK
+    newTask:TaskType
+    todolistId:string
+}
+type DeleteTaskACType={
+    type:typeof DELETE_TASK
+    taskId:string
+    todolistId:string
+}
+
+type UpdateTaskACType={
+    type:typeof UPDATE_TASK
+    todolistId:string
+    task:TaskType
+}
+ type ChangeTodolistTitleACType={
+    type:typeof UPDATE_TODOLIST_TITLE
+     title:string
+     todolistId:string
+ }
+ const setTodolistsAC=(todolists:Array<TodoType>):SetTodolistsACType=>{
     return{
         type:SET_TODOLISTS,
         todolists:todolists
     }
 }
-const deleteTodolistAC=(todolistId)=>{
+const deleteTodolistAC=(todolistId:string):DeleteTodolistACType=>{
     return {
         type: DELETE_TODOLIST,
         todolistId: todolistId
     }
 }
- const setTasksAC=(todolistId,tasks)=>{
+ const setTasksAC=(todolistId:string,tasks:Array<TaskType>):SetTasksACType=>{
     return{
         type:SET_TASKS,
         todolistId:todolistId,
@@ -143,35 +196,34 @@ const deleteTodolistAC=(todolistId)=>{
 
     }
 }
- const createTodolistAC =(newTodolist)=>{
+ const createTodolistAC =(newTodolist:TodoType):CreateTodolistACType=>{
     return{
         type:ADD_TODOLIST,
         newTodolist:newTodolist
     }
 }
- const addTaskAC=(newTask,todolistId)=>{
+ const addTaskAC=(newTask:TaskType,todolistId:string):AddTaskACType=>{
     return{
         type:ADD_TASK,
         newTask,
         todolistId
     }
 }
- const deleteTaskAC=(taskId, todolistId)=>{
+ const deleteTaskAC=(taskId:string, todolistId:string):DeleteTaskACType=>{
     return{
-
         type:DELETE_TASK,
         taskId,
         todolistId
     }
 }
-export const updateTaskAC=(task,todolistId)=>{
+export const updateTaskAC=(task:TaskType,todolistId:string):UpdateTaskACType=>{
     return{
         type:UPDATE_TASK,
         todolistId,
         task
     }
 }
- const changeTodolistTitleAC=(title,todolistId)=>{
+ const changeTodolistTitleAC=(title:string,todolistId:string):ChangeTodolistTitleACType=>{
     return{
         type:UPDATE_TODOLIST_TITLE,
         title,
@@ -179,16 +231,18 @@ export const updateTaskAC=(task,todolistId)=>{
     }
 }
 
-export  const loadTodolistThunkCreator=()=> {
-    return (dispatch) => {
+export type ThunkType=ThunkAction<void,AppStateType,unknown,ActionsType>;
+export type ThunkDispatchType  =ThunkDispatch<AppStateType,unknown,ActionsType>
+export  const loadTodolists=():ThunkType=> {
+    return (dispatch:ThunkDispatchType) => {
         api.setTodolists()
             .then(res => {
                 dispatch(setTodolistsAC(res.data));
             });
     }
 }
-export const addTodoThunkCreator=(newTitle)=>{
-    return(dispatch,getState)=>{
+export const addTodo=(newTitle:string):ThunkType=>{
+    return(dispatch:Dispatch<ActionsType>,getState:()=>AppStateType)=>{
         api.createTodolist(newTitle)
             .then(res => {
                 let todolist=res.data.data.item;
@@ -197,8 +251,8 @@ export const addTodoThunkCreator=(newTitle)=>{
             )
     }
 }
-export const deleteTodolistTC=(todolistId)=>{
-    return(dispatch)=>{
+export const deleteTodo=(todolistId:string):ThunkType=>{
+    return(dispatch:ThunkDispatchType)=>{
         api.deleteTodolist(todolistId)
             .then(res => {
                     if (res.data.resultCode === 0) {
@@ -208,8 +262,8 @@ export const deleteTodolistTC=(todolistId)=>{
             )
     }
 }
-export const changeTodolistTitleTC=(title,todolistId)=>{
-    return(dispatch)=>{
+export const changeTodolistTitle=(title:string,todolistId:string):ThunkType=>{
+    return(dispatch:ThunkDispatchType)=>{
         api.updateTodolistTitle(title,todolistId)
             .then(res=> {
                 if (res.data.resultCode === 0) {
@@ -220,8 +274,8 @@ export const changeTodolistTitleTC=(title,todolistId)=>{
 
     }
 }
-export const setTasksTC=(todolistId)=>{
-    return (dispatch)=>{
+export const loadTasks=(todolistId:string):ThunkType=>{
+    return (dispatch:ThunkDispatchType)=>{
         api.loadTasks(todolistId)
             .then(res => {
                 let tasks=res.data.items
@@ -229,8 +283,8 @@ export const setTasksTC=(todolistId)=>{
                 });
     }
 }
-export const addTaskTC=(newTitle, todolistId)=>{
-    return(dispatch)=>{
+export const addTask=(newTitle:string, todolistId:string):ThunkType=>{
+    return(dispatch:ThunkDispatchType)=>{
         api.addTask(newTitle, todolistId)
             .then(res => {
                 let task=res.data.data.item;
@@ -238,8 +292,8 @@ export const addTaskTC=(newTitle, todolistId)=>{
             })
     }
 }
-export  const deleteTaskTC =(taskId,todolistId)=>{
-    return(dispatch,getState)=>{
+export  const deleteTask =(taskId:string,todolistId:string):ThunkType=>{
+    return(dispatch:ThunkDispatchType)=>{
         api.deleteTask( taskId,todolistId)
             .then(res => {
                 dispatch(deleteTaskAC(taskId, todolistId));
@@ -247,8 +301,8 @@ export  const deleteTaskTC =(taskId,todolistId)=>{
             )
     }
 }
-export const updateTaskTC=( task,todolistId)=>{
-    return (dispatch)=>{
+export const updateTask=( task:TaskType,todolistId:string):ThunkType=>{
+    return (dispatch:ThunkDispatchType)=>{
         api.updateTask( task,todolistId)
             .then(res => {
                     if (res.data.resultCode === 0) {
@@ -260,4 +314,3 @@ export const updateTaskTC=( task,todolistId)=>{
 }
 
 
-export default reducer;

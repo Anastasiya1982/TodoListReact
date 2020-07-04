@@ -1,25 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {ChangeEvent} from 'react';
 import EditableSpan from "./EditableSpan";
 import IconButton from "@material-ui/core/IconButton";
 import {Delete} from "@material-ui/icons";
+import {TaskType} from "./Types/entities";
 
 
-class TodoListTask extends React.Component {
-    state = {
+
+
+type OwnPropsType={
+    title:string
+    task:TaskType
+    changeTitle:(task:TaskType, value:string)=>void
+    changeStatus:(task:TaskType,e:boolean)=>void
+    deleteTask:(id:string)=>void
+}
+
+
+type StateType={
+    isEditMode: boolean,
+    title:string
+}
+
+
+class TodoListTask extends React.Component <OwnPropsType,StateType>{
+    state:StateType = {
         isEditMode: false,
         title:this.props.title
     }
-    // activatedEditMode = () => {
-    //     this.setState({isEditMode: true});
-    // }
-    //
-   updateTaskTitle = (value) => {
+
+   updateTaskTitle = (value:string) => {
         this.props.changeTitle(this.props.task, value);
 
     }
 
-    onIsDoneChanged = (e) => {
+    onIsDoneChanged = (e: ChangeEvent<HTMLInputElement>) => {
         this.props.changeStatus(this.props.task, e.currentTarget.checked);
     };
 
@@ -46,10 +60,6 @@ class TodoListTask extends React.Component {
     }
 }
 
-TodoListTask.propTypes = {
-    isDone: PropTypes.func,
-    title: PropTypes.string,
-    ptiority: PropTypes.string
-}
+
 
 export default TodoListTask;

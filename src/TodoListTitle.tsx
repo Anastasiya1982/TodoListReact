@@ -1,11 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import EditableSpan from "./EditableSpan";
 
-class TodoListTitle  extends React.Component {
+type OwnPropsType={
+    title:string
+    onChange:(title:string)=>void
+}
+class TodoListTitle  extends React.Component<OwnPropsType> {
 
 
-    changeTitle=(title)=>{
+    changeTitle=(title:string)=>{
        this.props.onChange(title)
 
     }

@@ -4,25 +4,30 @@ import TodoList from "./TodoList";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
 import { addTodo,loadTodolists} from "./reducer";
-import EditableSpan from "./EditableSpan";
-import {TodoType} from "./Types/entities";
-import {AppStateType} from "./store";
-
-
+ import {TodoType} from "./Types/entities";
+ import {AppStateType} from "./store";
+import {getMyData, logIn} from "./auth-reducer";
+import Login from "./Login";
+import Header from "./Header";
 
 
 
 
  type MapStateToPropsType={
      todolists:Array<TodoType>
+     isAuth:boolean
+
  }
 
  type MapDispatchPropsType={
      loadTodolists:()=>void
+     getMyData:()=>void
      addTodo:(newTitle:string)=>void
+     logIn:(login:string, email:string,rememberMe:boolean)=>void
  }
   type StateType={
      todolists:Array<TodoType>
+
   }
 
  type PropsType= MapStateToPropsType & MapDispatchPropsType;
@@ -34,11 +39,9 @@ class App extends React.Component <PropsType,StateType> {
 
     componentDidMount() {
         this.restoreState();
+        this.props.getMyData()
     }
 
-  //делаем запрос на сервер за тудулистами
-    //ждем ответа, после того как ответ получен
-    // нужно отправить их в State  для отрисовки
 
 restoreState=()=>{
         this.props.loadTodolists();
@@ -53,16 +56,20 @@ restoreState=()=>{
 
     render = () => {
         const todolists = this.props.todolists.map(tl => <TodoList key={tl.id} id={tl.id} title={tl.title} tasks={tl.tasks}  />);
+        const onSubmit = (formData:any) => {
+           this.props.logIn(formData.email, formData.password, formData.rememberMe); }
         return (
             <>
-                <div>
-                    <EditableSpan value={""} onChange={(value:any)=>{}}/>
-                    <AddNewItemForm addItem={this.addTodoList}/>
-                </div>
-
-                <div className="App">
-                    {todolists}
-                </div>
+                {!this.props.isAuth
+                    ? <Login onSubmit={onSubmit}/>
+                    : <div>
+                        <Header />
+                        <AddNewItemForm addItem={this.addTodoList}/>
+                        <div className="App">
+                            {todolists}
+                        </div>
+                    </div>
+                }
             </>
         );
     }
@@ -70,25 +77,15 @@ restoreState=()=>{
 
     const mapStateToProps = (state:AppStateType):MapStateToPropsType => {
         return {
-            todolists: state.reducer.todolists
+            todolists: state.reducer.todolists,
+            isAuth:state.auth.isAuth,
+
         }
     }
-    // const mapDispatchToProps = (dispatch:Dispatch<ActionsType>):MapDispatchPropsType => {
-    //     return {
-    //         loadTodolists:()=>{
-    //             let  thunk=loadTodolists();
-    //             dispatch(thunk)
-    //         },
-    //         addTodo: (newTitle) => {
-    //             let thunk=addTodo(newTitle)
-    //             dispatch(thunk)
-    //         }
-    //
-    //     }
-    // }
 
 
 
-export default connect<MapStateToPropsType,MapDispatchPropsType,{},AppStateType>(mapStateToProps,{loadTodolists,addTodo})(App);
+
+export default connect<MapStateToPropsType,{},{},AppStateType>(mapStateToProps,{loadTodolists,addTodo,logIn, getMyData})(App);
 
 

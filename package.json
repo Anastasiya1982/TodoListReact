@@ -17,6 +17,7 @@
     "react-redux": "^7.2.0",
     "react-scripts": "3.0.1",
     "redux": "^4.0.5",
+    "redux-form": "^8.3.6",
     "redux-thunk": "^2.3.0",
     "typescript": "^3.9.6"
   },
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@types/redux-form": "^8.2.7",
     "csscomb": "^4.3.0"
   }
 }

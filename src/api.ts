@@ -20,6 +20,13 @@ const instance=axios.create({
 //             "order": 0
 //     }
 // }
+type GetTodolistType=Array<TodoType>
+
+type GetTasksType={
+    error:null|string
+    items:Array<TaskType>
+    totalCount:number
+}
 
 
 type CommonAPIType<T> = {
@@ -50,13 +57,7 @@ type CommonAPIType<T> = {
 //     data: {}
 // }
 
-type GetTodolistType=Array<TodoType>
-    
-type GetTasksType={
-    error:null|string
-    items:Array<TaskType>
-    totalCount:number
-}
+
 
 export const api  = {
     createTodolist(newTitle:string) {
@@ -87,6 +88,15 @@ export const api  = {
     },
     updateTodolistTitle(title:string,todolistId:string){
         return instance.put<CommonAPIType<{item:TaskType}>>(`/todo-lists/${todolistId}`,title);
+    },
+    authMe(){
+        return instance.get(`/auth/me`);
+    },
+    login(email:string,password:string,rememberMe:boolean=false){
+        return instance.post(`/auth/login`,{email,password,rememberMe});
+    },
+    logout(){
+        return instance.delete(`/auth/login`);
     }
 
 }

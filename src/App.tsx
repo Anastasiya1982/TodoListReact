@@ -61,9 +61,16 @@ restoreState=()=>{
         return (
             <>
                 {!this.props.isAuth
-                    ? <Login onSubmit={onSubmit}/>
+                    ? <div>
+                        <div>данные тестового аккаунта:
+                            Email: free@samuraijs.com
+                            Password: free
+                        </div>
+                        <Login onSubmit={onSubmit}/>
+                    </div>
+
                     : <div>
-                        <Header />
+                        <Header/>
                         <AddNewItemForm addItem={this.addTodoList}/>
                         <div className="App">
                             {todolists}
